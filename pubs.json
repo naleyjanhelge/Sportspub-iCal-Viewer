@@ -1,0 +1,12 @@
+{
+  "sportsbaren": {
+    "name": "Sportsbaren",
+    "logo": "assets/sportsbaren-logo.png",
+    "colors": {
+      "primary": "#d2242a",
+      "secondary": "#000000",
+      "text": "#ffffff"
+    },
+    "ical": "https://calendar.google.com/calendar/u/0?cid=Y182MDM0YmQ1MjI4MzU0MjY3M2Y4OGRjMjdmNTcxNmM4MGEwNmI5NjdiNGM1MDI0OTUwMzM3ZWZjZTE1YmEwZDc4QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20"
+  }
+}
