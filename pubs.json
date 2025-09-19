@@ -2,6 +2,7 @@
   "sportsbaren": {
     "name": "Sportsbaren",
     "logo": "assets/sportsbaren-logo-rgb.png",
+    "theme": "assets/sportsbaren.css",
     "colors": {
       "primary": "#d2242a",
       "secondary": "#000000",

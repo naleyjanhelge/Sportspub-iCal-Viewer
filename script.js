@@ -1,3 +1,71 @@
+const THEME_LINK_ID = "pub-theme";
+
+function ensureThemeStylesheet(themePath) {
+  const existingLink = document.getElementById(THEME_LINK_ID);
+
+  if (themePath) {
+    const resolvedHref = new URL(themePath, window.location.href).href;
+
+    if (existingLink) {
+      if (existingLink.href !== resolvedHref) {
+        existingLink.href = themePath;
+      }
+    } else {
+      const link = document.createElement("link");
+      link.id = THEME_LINK_ID;
+      link.rel = "stylesheet";
+      link.href = themePath;
+      document.head.appendChild(link);
+    }
+  } else if (existingLink) {
+    existingLink.remove();
+  }
+}
+
+function applyColorVariables(pub) {
+  const rootStyle = document.documentElement.style;
+  const colors = pub.colors || {};
+  const colorMappings = [
+    ["--app-background", colors.secondary],
+    ["--app-text-color", colors.text],
+    ["--app-header-background", colors.primary],
+  ];
+
+  if (pub.theme) {
+    colorMappings.forEach(([name]) => {
+      rootStyle.removeProperty(name);
+    });
+    return;
+  }
+
+  colorMappings.forEach(([name, value]) => {
+    if (value) {
+      rootStyle.setProperty(name, value);
+    } else {
+      rootStyle.removeProperty(name);
+    }
+  });
+}
+
+function applyBranding(pubKey, pub) {
+  document.body.dataset.pub = pubKey;
+  document.body.dataset.theme = pub.theme ? "custom" : "default";
+
+  ensureThemeStylesheet(pub.theme);
+  applyColorVariables(pub);
+
+  const logoEl = document.getElementById("logo");
+  if (logoEl && pub.logo) {
+    logoEl.src = pub.logo;
+    logoEl.alt = `${pub.name || "Pub"} logo`;
+  }
+
+  const nameEl = document.getElementById("pub-name");
+  if (nameEl) {
+    nameEl.textContent = pub.name || "";
+  }
+}
+
 async function loadPubConfig() {
   const urlParams = new URLSearchParams(window.location.search);
   const pubKey = urlParams.get("pub") || "sportsbaren";
@@ -35,12 +103,7 @@ async function loadPubConfig() {
     return;
   }
 
-  // Apply branding
-  document.body.style.backgroundColor = pub.colors.secondary;
-  document.body.style.color = pub.colors.text;
-  document.querySelector("header").style.background = pub.colors.primary;
-  document.getElementById("logo").src = pub.logo;
-  document.getElementById("pub-name").textContent = pub.name;
+  applyBranding(pubKey, pub);
 
   await renderEventsForView(pub);
 }

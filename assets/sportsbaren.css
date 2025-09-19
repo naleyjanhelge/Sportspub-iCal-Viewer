@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Staatliches&display=swap");
+
+:root {
+  --app-body-font: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --app-heading-font: "Staatliches", "Barlow", sans-serif;
+  --app-background: radial-gradient(circle at 15% 20%, rgba(210, 36, 42, 0.45), transparent 55%),
+    radial-gradient(circle at 85% 15%, rgba(18, 75, 160, 0.3), transparent 55%),
+    #040204;
+  --app-text-color: #f5f7fa;
+  --app-text-strong: rgba(245, 247, 250, 0.9);
+  --app-text-subtle: rgba(245, 247, 250, 0.75);
+  --app-text-muted: rgba(245, 247, 250, 0.7);
+  --app-text-tertiary: rgba(245, 247, 250, 0.65);
+  --app-header-background: linear-gradient(135deg, rgba(10, 10, 15, 0.95), rgba(210, 36, 42, 0.92) 80%);
+  --app-surface-background: rgba(9, 10, 16, 0.85);
+  --app-surface-border: rgba(245, 247, 250, 0.12);
+  --app-surface-highlight-border: rgba(210, 36, 42, 0.65);
+  --app-surface-highlight-ring: rgba(210, 36, 42, 0.35);
+  --app-event-background: rgba(8, 9, 16, 0.9);
+  --app-event-border: rgba(210, 36, 42, 0.45);
+  --app-event-time-color: #ffd166;
+}
+
+body {
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+header {
+  box-shadow: 0 8px 24px rgba(4, 2, 4, 0.6);
+  border-bottom: 3px solid rgba(210, 36, 42, 0.45);
+}
+
+#pub-name {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+header img {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.65));
+}
+
+body[data-view="sidebar"] .sidebar-day,
+body[data-view="weekly"] .weekday {
+  backdrop-filter: blur(14px);
+}
+
+body[data-view="sidebar"] .sidebar-day-title,
+body[data-view="weekly"] .weekday-name,
+body[data-view="weekly"] .week-header h2 {
+  letter-spacing: 0.22em;
+}
+
+body[data-view="sidebar"] .sidebar-event .event-title,
+body[data-view="weekly"] .event-title {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+body[data-view="sidebar"] .sidebar-event .event-time,
+body[data-view="weekly"] .event-time {
+  font-weight: 800;
+}
+
+body[data-view="weekly"] .week-header {
+  border-bottom: 2px solid rgba(210, 36, 42, 0.35);
+  padding-bottom: 12px;
+}
+
+body[data-view="weekly"] .week-header h2 {
+  font-size: clamp(1.9rem, 2.4vw, 2.8rem);
+}
