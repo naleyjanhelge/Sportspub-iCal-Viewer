@@ -28,12 +28,18 @@ body {
 header {
   display: flex;
   align-items: center;
+  gap: 20px;
   padding: 16px 24px;
   background: var(--app-header-background, #111);
 }
 header img {
   height: 64px;
-  margin-right: 20px;
+  flex-shrink: 0;
+}
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 #pub-name {
   margin: 0;
@@ -42,10 +48,20 @@ header img {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+.view-title {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-text-subtle, rgba(255, 255, 255, 0.7));
+}
+#view-title:empty {
+  display: none;
+}
 #pub-name,
 body[data-view="sidebar"] .sidebar-day-title,
 body[data-view="weekly"] .weekday-name,
-body[data-view="weekly"] .week-header h2,
+body[data-view="weekly"] .week-title,
 body[data-view="sidebar"] .sidebar-event .event-title,
 body[data-view="weekly"] .event-title {
   font-family: var(--app-heading-font, var(--app-body-font, Arial, sans-serif));
@@ -70,6 +86,33 @@ body[data-view="weekly"] .event-title {
 
 body[data-view="sidebar"] main {
   padding: 24px 26px 36px;
+}
+
+body[data-view="sidebar"] header {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 18px;
+  padding: 32px 24px 24px;
+}
+
+body[data-view="sidebar"] header img {
+  height: clamp(80px, 18vw, 140px);
+}
+
+body[data-view="sidebar"] .header-text {
+  align-items: center;
+  gap: 10px;
+}
+
+body[data-view="sidebar"] #pub-name {
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+}
+
+body[data-view="sidebar"] .view-title {
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  letter-spacing: 0.14em;
 }
 
 body[data-view="sidebar"] #events {
@@ -183,12 +226,26 @@ body[data-view="weekly"] .week-header {
   margin-bottom: 32px;
 }
 
-body[data-view="weekly"] .week-header h2 {
+body[data-view="weekly"] .week-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-view="weekly"] .week-title {
   margin: 0;
-  font-size: clamp(1.8rem, 2.4vw, 2.6rem);
-  letter-spacing: 0.05em;
+  font-size: clamp(1.9rem, 2.5vw, 2.8rem);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1.2;
+}
+
+body[data-view="weekly"] .week-range {
+  margin: 0;
+  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-text-muted, rgba(255, 255, 255, 0.65));
 }
 
 body[data-view="weekly"] #events {
@@ -196,7 +253,7 @@ body[data-view="weekly"] #events {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 24px;
   padding: 0;
-  justify-items: center;
+  justify-items: stretch;
   align-content: start;
 }
 
@@ -209,7 +266,7 @@ body[data-view="weekly"] .weekday {
   min-height: 320px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
   border: 1px solid var(--app-surface-border, rgba(255, 255, 255, 0.08));
-  width: min(100%, 360px);
+  width: min(100%, 380px);
 }
 
 body[data-view="weekly"] .weekday.is-today {
@@ -295,5 +352,74 @@ body[data-view="weekly"] .event-description {
   color: var(--app-text-subtle, rgba(255, 255, 255, 0.7));
   white-space: pre-line;
   line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+  body[data-view="weekly"] main {
+    padding: 24px 28px 40px;
+  }
+
+  body[data-view="weekly"] #events {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  body[data-view="weekly"] .weekday {
+    min-height: auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 780px) {
+  header {
+    padding: 20px 24px;
+  }
+
+  body[data-view="weekly"] header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  body[data-view="weekly"] .header-text {
+    align-items: flex-start;
+  }
+
+  body[data-view="weekly"] .week-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  body[data-view="weekly"] .week-range {
+    font-size: 1.2rem;
+  }
+
+  body[data-view="weekly"] #events {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  body[data-view="weekly"] .weekday {
+    padding: 22px;
+  }
+
+  body[data-view="weekly"] .weekday-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  body[data-view="weekly"] .weekday-date {
+    font-size: 1.25rem;
+  }
+
+  body[data-view="weekly"] .event {
+    padding: 16px 18px;
+  }
+
+  body[data-view="weekly"] .event-time {
+    font-size: 1.35rem;
+  }
 }
 

@@ -10,11 +10,17 @@
 <body data-view="weekly">
   <header>
     <img id="logo" alt="Pub-logo">
-    <h1 id="pub-name"></h1>
+    <div class="header-text">
+      <h1 id="pub-name"></h1>
+      <p id="view-title" class="view-title" aria-live="polite"></p>
+    </div>
   </header>
   <main>
     <section class="week-header">
-      <h2 id="week-range">Denne uken</h2>
+      <div class="week-header-text">
+        <h2 class="week-title">Ukens kamper</h2>
+        <p id="week-range" class="week-range" aria-live="polite"></p>
+      </div>
     </section>
     <div id="events" class="weekly-grid" aria-live="polite"></div>
   </main>

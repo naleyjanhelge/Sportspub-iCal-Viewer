@@ -51,12 +51,28 @@ function applyColorVariables(pub) {
   });
 }
 
+function updateViewTitle() {
+  const viewTitleEl = document.getElementById("view-title");
+  if (!viewTitleEl) {
+    return;
+  }
+
+  const view = document.body.dataset.view;
+  if (view === "sidebar") {
+    viewTitleEl.textContent = "Kommende kamper";
+    return;
+  }
+
+  viewTitleEl.textContent = "";
+}
+
 function applyBranding(pubKey, pub) {
   document.body.dataset.pub = pubKey;
   document.body.dataset.theme = pub.theme ? "custom" : "default";
 
   ensureThemeStylesheet(pub.theme);
   applyColorVariables(pub);
+  updateViewTitle();
 
   const logoEl = document.getElementById("logo");
   if (logoEl && pub.logo) {
@@ -651,4 +667,5 @@ function renderSidebarEvents(events) {
   eventsContainer.appendChild(fragment);
 }
 
+updateViewTitle();
 loadPubConfig();
