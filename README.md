@@ -35,6 +35,11 @@ sportspub-ical-viewer/
 - Open: `weekly.html?pub=sportsbaren` for the weekly view.
 - Add more pubs by editing `pubs.json` and dropping a logo in `/assets/`.
 
+### Calendar feed requirements
+- Each pub entry must provide a **public** iCal feed URL that responds with a standard `.ics` file.
+- The feed should be the "basic" Google Calendar export (or similar) so the link ends with `.ics` and returns text in [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) format.
+- Example: `https://calendar.google.com/calendar/ical/.../public/basic.ics`.
+
 ---
 
 ## 📄 License
