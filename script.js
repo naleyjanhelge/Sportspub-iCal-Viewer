@@ -469,47 +469,138 @@ function renderSidebarEvents(events) {
   }
 
   upcomingEvents.sort((a, b) => a.start.getTime() - b.start.getTime());
+  const dayBuckets = new Map();
 
-  const limitedEvents = upcomingEvents.slice(0, 10);
+  upcomingEvents.forEach((event) => {
+    const eventStart = event.start;
+    const eventEnd = event.end || event.start;
+
+    let currentDay = getStartOfDay(eventStart);
+    const lastDay = getStartOfDay(eventEnd);
+
+    while (currentDay.getTime() <= lastDay.getTime()) {
+      const dayKey = currentDay.getTime();
+      if (!dayBuckets.has(dayKey)) {
+        dayBuckets.set(dayKey, []);
+      }
+      dayBuckets.get(dayKey).push(event);
+
+      const nextDay = new Date(currentDay);
+      nextDay.setDate(currentDay.getDate() + 1);
+      currentDay = nextDay;
+    }
+  });
+
+  dayBuckets.forEach((bucket) => {
+    bucket.sort((a, b) => a.start.getTime() - b.start.getTime());
+  });
+
+  const todayStart = getStartOfDay(now);
+  const tomorrowStart = new Date(todayStart);
+  tomorrowStart.setDate(todayStart.getDate() + 1);
+
+  const sortedBucketKeys = Array.from(dayBuckets.keys()).sort((a, b) => a - b);
+  const lastEventDayKey =
+    sortedBucketKeys.length > 0 ? sortedBucketKeys[sortedBucketKeys.length - 1] : todayStart.getTime();
 
   const fragment = document.createDocumentFragment();
 
-  limitedEvents.forEach((event) => {
-    const eventEl = document.createElement("article");
-    eventEl.className = "event";
+  const MAX_DAYS_TO_RENDER = 6;
+  const REQUIRED_DAY_COUNT = Math.min(2, MAX_DAYS_TO_RENDER);
+  let dayCursor = new Date(todayStart);
+  let daysRendered = 0;
 
-    const timeEl = document.createElement("time");
-    timeEl.className = "event-time";
-    timeEl.dateTime = event.start.toISOString();
-    const dateLabel = event.start.toLocaleDateString(undefined, {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-    timeEl.textContent = `${dateLabel} • ${formatEventTime(event)}`;
-    eventEl.appendChild(timeEl);
+  while (
+    daysRendered < REQUIRED_DAY_COUNT ||
+    (daysRendered < MAX_DAYS_TO_RENDER && dayCursor.getTime() <= lastEventDayKey)
+  ) {
+    const dayStart = new Date(dayCursor);
+    const dayKey = dayStart.getTime();
+    const dayEvents = dayBuckets.get(dayKey) || [];
 
-    const titleEl = document.createElement("h3");
-    titleEl.className = "event-title";
-    titleEl.textContent = event.title;
-    eventEl.appendChild(titleEl);
-
-    if (event.location) {
-      const locationEl = document.createElement("p");
-      locationEl.className = "event-location";
-      locationEl.textContent = event.location;
-      eventEl.appendChild(locationEl);
+    const daySection = document.createElement("section");
+    daySection.className = "sidebar-day";
+    if (isSameDay(dayStart, now)) {
+      daySection.classList.add("is-today");
     }
 
-    if (event.description) {
-      const descriptionEl = document.createElement("p");
-      descriptionEl.className = "event-description";
-      descriptionEl.textContent = event.description;
-      eventEl.appendChild(descriptionEl);
+    const heading = document.createElement("div");
+    heading.className = "sidebar-day-heading";
+
+    const titleEl = document.createElement("h2");
+    titleEl.className = "sidebar-day-title";
+    const isToday = isSameDay(dayStart, todayStart);
+    const isTomorrow = isSameDay(dayStart, tomorrowStart);
+    titleEl.textContent = isToday
+      ? "Today"
+      : isTomorrow
+        ? "Tomorrow"
+        : dayStart.toLocaleDateString(undefined, { weekday: "long" });
+
+    const dateEl = document.createElement("span");
+    dateEl.className = "sidebar-day-date";
+    dateEl.textContent = dayStart.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+
+    heading.append(titleEl, dateEl);
+    daySection.appendChild(heading);
+
+    if (dayEvents.length === 0) {
+      const emptyMessage = document.createElement("p");
+      emptyMessage.className = "sidebar-no-events";
+      emptyMessage.textContent = "No events scheduled.";
+      daySection.appendChild(emptyMessage);
+    } else {
+      const list = document.createElement("ul");
+      list.className = "sidebar-event-list";
+
+      dayEvents.forEach((event) => {
+        const item = document.createElement("li");
+        item.className = "sidebar-event";
+
+        const timeEl = document.createElement("time");
+        timeEl.className = "event-time";
+        timeEl.dateTime = event.start.toISOString();
+        timeEl.textContent = formatEventTime(event, dayStart);
+        item.appendChild(timeEl);
+
+        const info = document.createElement("div");
+        info.className = "sidebar-event-info";
+
+        const eventTitleEl = document.createElement("h3");
+        eventTitleEl.className = "event-title";
+        eventTitleEl.textContent = event.title;
+        info.appendChild(eventTitleEl);
+
+        if (event.location) {
+          const locationEl = document.createElement("p");
+          locationEl.className = "event-location";
+          locationEl.textContent = event.location;
+          info.appendChild(locationEl);
+        }
+
+        if (event.description) {
+          const descriptionEl = document.createElement("p");
+          descriptionEl.className = "event-description";
+          descriptionEl.textContent = event.description;
+          info.appendChild(descriptionEl);
+        }
+
+        item.appendChild(info);
+        list.appendChild(item);
+      });
+
+      daySection.appendChild(list);
     }
 
-    fragment.appendChild(eventEl);
-  });
+    fragment.appendChild(daySection);
+
+    dayCursor.setDate(dayCursor.getDate() + 1);
+    daysRendered += 1;
+
+    if (daysRendered >= MAX_DAYS_TO_RENDER) {
+      break;
+    }
+  }
 
   eventsContainer.innerHTML = "";
   eventsContainer.appendChild(fragment);
