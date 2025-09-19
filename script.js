@@ -1,6 +1,5 @@
 const THEME_LINK_ID = "pub-theme";
 const NORWEGIAN_LOCALE = "nb-NO";
-const TIME_FORMAT_OPTIONS = { hour: "2-digit", minute: "2-digit", hour12: false };
 const WEEKDAY_FORMAT_OPTIONS = { weekday: "long" };
 const MONTH_DAY_FORMAT_OPTIONS = { month: "short", day: "numeric" };
 const DAY_FORMAT_OPTIONS = { day: "numeric" };
@@ -369,41 +368,17 @@ function isSameDay(a, b) {
   );
 }
 
-function formatEventTime(event, referenceDayStart) {
+function formatEventTime(event) {
   if (event.allDay) {
     return "Hele dagen";
   }
 
   const eventStart = event.start;
-  const eventEnd = event.end;
-  const startText = eventStart.toLocaleTimeString(NORWEGIAN_LOCALE, TIME_FORMAT_OPTIONS);
-
-  if (referenceDayStart) {
-    const dayStart = new Date(referenceDayStart);
-    dayStart.setHours(0, 0, 0, 0);
-    const dayEnd = new Date(dayStart);
-    dayEnd.setDate(dayEnd.getDate() + 1);
-
-    if (eventStart < dayStart) {
-      if (eventEnd && eventEnd > dayStart && eventEnd < dayEnd) {
-        const endTime = eventEnd.toLocaleTimeString(NORWEGIAN_LOCALE, TIME_FORMAT_OPTIONS);
-        return `Til kl. ${endTime}`;
-      }
-
-      return "Pågår";
-    }
-
-    if (eventEnd && eventEnd > dayEnd) {
-      return `${startText} – …`;
-    }
-  }
-
-  if (eventEnd && eventEnd > eventStart) {
-    const endText = eventEnd.toLocaleTimeString(NORWEGIAN_LOCALE, TIME_FORMAT_OPTIONS);
-    return `${startText} – ${endText}`;
-  }
-
-  return startText;
+  return eventStart.toLocaleTimeString("nb-NO", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 }
 
 function renderWeeklyEvents(events) {
@@ -477,7 +452,7 @@ function renderWeeklyEvents(events) {
       const timeEl = document.createElement("time");
       timeEl.className = "event-time";
       timeEl.dateTime = event.start.toISOString();
-      timeEl.textContent = formatEventTime(event, dayStart);
+      timeEl.textContent = formatEventTime(event);
       eventEl.appendChild(timeEl);
 
       const titleEl = document.createElement("h3");
@@ -630,7 +605,7 @@ function renderSidebarEvents(events) {
         const timeEl = document.createElement("time");
         timeEl.className = "event-time";
         timeEl.dateTime = event.start.toISOString();
-        timeEl.textContent = formatEventTime(event, dayStart);
+        timeEl.textContent = formatEventTime(event);
         item.appendChild(timeEl);
 
         const info = document.createElement("div");
