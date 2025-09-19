@@ -23,16 +23,24 @@ body {
   font-family: var(--app-body-font, Arial, sans-serif);
   background: var(--app-background, #000);
   color: var(--app-text-color, #fff);
+  font-size: 18px;
 }
 header {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 16px 24px;
   background: var(--app-header-background, #111);
 }
 header img {
-  height: 50px;
-  margin-right: 15px;
+  height: 64px;
+  margin-right: 20px;
+}
+#pub-name {
+  margin: 0;
+  font-size: clamp(2.1rem, 2.8vw, 2.9rem);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 #pub-name,
 body[data-view="sidebar"] .sidebar-day-title,
@@ -43,7 +51,7 @@ body[data-view="weekly"] .event-title {
   font-family: var(--app-heading-font, var(--app-body-font, Arial, sans-serif));
 }
 #events {
-  padding: 20px;
+  padding: 24px;
 }
 
 .error-message {
@@ -61,20 +69,20 @@ body[data-view="weekly"] .event-title {
 }
 
 body[data-view="sidebar"] main {
-  padding: 16px 18px 28px;
+  padding: 24px 26px 36px;
 }
 
 body[data-view="sidebar"] #events {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   padding: 0;
 }
 
 body[data-view="sidebar"] .sidebar-day {
   background: var(--app-surface-background, rgba(255, 255, 255, 0.06));
   border-radius: 12px;
-  padding: 14px 16px 16px;
+  padding: 20px 22px 24px;
   border: 1px solid var(--app-surface-border, rgba(255, 255, 255, 0.08));
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
@@ -88,19 +96,20 @@ body[data-view="sidebar"] .sidebar-day-heading {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 body[data-view="sidebar"] .sidebar-day-title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 2rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  line-height: 1.2;
 }
 
 body[data-view="sidebar"] .sidebar-day-date {
-  font-size: 0.95rem;
+  font-size: 1.35rem;
   color: var(--app-text-subtle, rgba(255, 255, 255, 0.7));
   white-space: nowrap;
 }
@@ -108,7 +117,7 @@ body[data-view="sidebar"] .sidebar-day-date {
 body[data-view="sidebar"] .sidebar-event-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 18px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -117,36 +126,37 @@ body[data-view="sidebar"] .sidebar-event-list {
 body[data-view="sidebar"] .sidebar-event {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 4px 12px;
+  gap: 6px 16px;
   align-items: start;
 }
 
 body[data-view="sidebar"] .sidebar-event-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 body[data-view="sidebar"] .sidebar-event .event-time {
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  font-size: 0.95rem;
+  font-size: 1.45rem;
   color: var(--app-event-time-color, rgba(255, 255, 255, 0.85));
 }
 
 body[data-view="sidebar"] .sidebar-event .event-title {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.3;
+  font-size: 1.75rem;
+  line-height: 1.35;
 }
 
 body[data-view="sidebar"] .sidebar-event .event-location,
 body[data-view="sidebar"] .sidebar-event .event-description {
   margin: 0;
   grid-column: 2 / 3;
-  font-size: 0.9rem;
+  font-size: 1.35rem;
   color: var(--app-text-subtle, rgba(255, 255, 255, 0.7));
+  line-height: 1.5;
 }
 
 body[data-view="sidebar"] .sidebar-event .event-description {
@@ -156,32 +166,35 @@ body[data-view="sidebar"] .sidebar-event .event-description {
 body[data-view="sidebar"] .sidebar-no-events {
   margin: 0;
   font-style: italic;
+  font-size: 1.35rem;
   color: var(--app-text-tertiary, rgba(255, 255, 255, 0.6));
+  line-height: 1.45;
 }
 
 body[data-view="weekly"] main {
-  padding: 20px 30px 40px;
+  padding: 28px 40px 52px;
 }
 
 body[data-view="weekly"] .week-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 20px;
+  margin-bottom: 32px;
 }
 
 body[data-view="weekly"] .week-header h2 {
   margin: 0;
-  font-size: clamp(1.6rem, 2vw, 2.4rem);
-  letter-spacing: 0.04em;
+  font-size: clamp(1.8rem, 2.4vw, 2.6rem);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  line-height: 1.2;
 }
 
 body[data-view="weekly"] #events {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
   padding: 0;
   justify-items: center;
   align-content: start;
@@ -190,13 +203,13 @@ body[data-view="weekly"] #events {
 body[data-view="weekly"] .weekday {
   background: var(--app-surface-background, rgba(255, 255, 255, 0.06));
   border-radius: 12px;
-  padding: 18px;
+  padding: 26px;
   display: flex;
   flex-direction: column;
-  min-height: 260px;
+  min-height: 320px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
   border: 1px solid var(--app-surface-border, rgba(255, 255, 255, 0.08));
-  width: min(100%, 320px);
+  width: min(100%, 360px);
 }
 
 body[data-view="weekly"] .weekday.is-today {
@@ -208,26 +221,27 @@ body[data-view="weekly"] .weekday-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 22px;
 }
 
 body[data-view="weekly"] .weekday-name {
   margin: 0;
-  font-size: 1.2rem;
-  letter-spacing: 0.06em;
+  font-size: 2.1rem;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
+  line-height: 1.2;
 }
 
 body[data-view="weekly"] .weekday-date {
-  font-size: 0.95rem;
+  font-size: 1.35rem;
   color: var(--app-text-subtle, rgba(255, 255, 255, 0.7));
 }
 
 body[data-view="weekly"] .events-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
   flex: 1;
 }
 
@@ -239,7 +253,7 @@ body[data-view="weekly"] #events.is-empty {
 }
 
 body[data-view="weekly"] #events.is-empty .no-events {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   text-align: center;
   max-width: 360px;
 }
@@ -247,36 +261,39 @@ body[data-view="weekly"] #events.is-empty .no-events {
 body[data-view="weekly"] .event {
   background: var(--app-event-background, rgba(0, 0, 0, 0.35));
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   border: 1px solid var(--app-event-border, rgba(255, 255, 255, 0.08));
 }
 
 body[data-view="weekly"] .event-time {
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--app-event-time-color, rgba(255, 255, 255, 0.85));
+  font-size: 1.45rem;
 }
 
 body[data-view="weekly"] .event-title {
   margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.3;
+  font-size: 1.8rem;
+  line-height: 1.35;
 }
 
 body[data-view="weekly"] .event-location {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.4rem;
   color: var(--app-text-soft, rgba(255, 255, 255, 0.75));
+  line-height: 1.45;
 }
 
 body[data-view="weekly"] .event-description {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 1.3rem;
   color: var(--app-text-subtle, rgba(255, 255, 255, 0.7));
   white-space: pre-line;
+  line-height: 1.45;
 }
 
