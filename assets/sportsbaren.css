@@ -48,7 +48,7 @@ body[data-view="weekly"] .weekday {
 
 body[data-view="sidebar"] .sidebar-day-title,
 body[data-view="weekly"] .weekday-name,
-body[data-view="weekly"] .week-header h2 {
+body[data-view="weekly"] .week-title {
   letter-spacing: 0.22em;
 }
 
@@ -68,6 +68,20 @@ body[data-view="weekly"] .week-header {
   padding-bottom: 12px;
 }
 
-body[data-view="weekly"] .week-header h2 {
-  font-size: clamp(1.9rem, 2.4vw, 2.8rem);
+body[data-view="weekly"] .week-title {
+  font-size: clamp(2rem, 2.5vw, 3rem);
+}
+
+body[data-view="weekly"] .week-range {
+  color: rgba(255, 209, 102, 0.9);
+  letter-spacing: 0.18em;
+}
+
+.view-title {
+  color: rgba(255, 209, 102, 0.95);
+  letter-spacing: 0.18em;
+}
+
+body[data-view="sidebar"] header {
+  background: linear-gradient(160deg, rgba(4, 2, 4, 0.92), rgba(210, 36, 42, 0.85));
 }
