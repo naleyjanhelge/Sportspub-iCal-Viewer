@@ -2,12 +2,36 @@ async function loadPubConfig() {
   const urlParams = new URLSearchParams(window.location.search);
   const pubKey = urlParams.get("pub") || "sportsbaren";
 
-  const res = await fetch("pubs.json");
-  const pubs = await res.json();
+  let pubs;
+  try {
+    const res = await fetch("pubs.json");
+
+    if (!res.ok) {
+      throw new Error(`Failed to load pub configuration: ${res.status} ${res.statusText}`);
+    }
+
+    pubs = await res.json();
+  } catch (error) {
+    console.error("Error loading pub configuration", error);
+
+    const eventsContainer = document.getElementById("events");
+    if (eventsContainer) {
+      eventsContainer.innerHTML =
+        "<p class=\"error-message\">Unable to load pub configuration. Please try again later.</p>";
+    }
+
+    return;
+  }
 
   const pub = pubs[pubKey];
   if (!pub) {
-    document.body.innerHTML = "<p>Pub configuration not found.</p>";
+    console.warn(`Pub configuration not found for key: ${pubKey}`);
+
+    const eventsContainer = document.getElementById("events");
+    if (eventsContainer) {
+      eventsContainer.innerHTML = "<p class=\"error-message\">Pub configuration not found.</p>";
+    }
+
     return;
   }
 
