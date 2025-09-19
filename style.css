@@ -56,6 +56,8 @@ body[data-view="weekly"] #events {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 18px;
   padding: 0;
+  justify-items: center;
+  align-content: start;
 }
 
 body[data-view="weekly"] .weekday {
@@ -67,6 +69,7 @@ body[data-view="weekly"] .weekday {
   min-height: 260px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  width: min(100%, 320px);
 }
 
 body[data-view="weekly"] .weekday.is-today {
@@ -99,6 +102,19 @@ body[data-view="weekly"] .events-list {
   flex-direction: column;
   gap: 14px;
   flex: 1;
+}
+
+body[data-view="weekly"] #events.is-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 0;
+}
+
+body[data-view="weekly"] #events.is-empty .no-events {
+  font-size: 1.1rem;
+  text-align: center;
+  max-width: 360px;
 }
 
 body[data-view="weekly"] .event {
@@ -137,7 +153,3 @@ body[data-view="weekly"] .event-description {
   white-space: pre-line;
 }
 
-body[data-view="weekly"] .events-list .no-events {
-  text-align: center;
-  padding: 24px 0;
-}

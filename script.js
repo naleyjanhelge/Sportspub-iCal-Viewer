@@ -355,6 +355,7 @@ function renderWeeklyEvents(events) {
   });
 
   eventsContainer.innerHTML = "";
+  let renderedDayCount = 0;
 
   for (let offset = 0; offset < 7; offset += 1) {
     const dayStart = new Date(weekStart);
@@ -363,6 +364,18 @@ function renderWeeklyEvents(events) {
 
     const dayEnd = new Date(dayStart);
     dayEnd.setDate(dayEnd.getDate() + 1);
+
+    const dayEvents = weekEvents
+      .filter((event) => {
+        const eventStart = event.start;
+        const eventEnd = event.end || event.start;
+        return eventStart < dayEnd && eventEnd >= dayStart;
+      })
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
+
+    if (dayEvents.length === 0) {
+      continue;
+    }
 
     const daySection = document.createElement("section");
     daySection.className = "weekday";
@@ -387,55 +400,52 @@ function renderWeeklyEvents(events) {
     const list = document.createElement("div");
     list.className = "events-list";
 
-    const dayEvents = weekEvents
-      .filter((event) => {
-        const eventStart = event.start;
-        const eventEnd = event.end || event.start;
-        return eventStart < dayEnd && eventEnd >= dayStart;
-      })
-      .sort((a, b) => a.start.getTime() - b.start.getTime());
+    dayEvents.forEach((event) => {
+      const eventEl = document.createElement("article");
+      eventEl.className = "event";
 
-    if (dayEvents.length === 0) {
-      const emptyMessage = document.createElement("p");
-      emptyMessage.className = "no-events";
-      emptyMessage.textContent = "No events";
-      list.appendChild(emptyMessage);
-    } else {
-      dayEvents.forEach((event) => {
-        const eventEl = document.createElement("article");
-        eventEl.className = "event";
+      const timeEl = document.createElement("time");
+      timeEl.className = "event-time";
+      timeEl.dateTime = event.start.toISOString();
+      timeEl.textContent = formatEventTime(event, dayStart);
+      eventEl.appendChild(timeEl);
 
-        const timeEl = document.createElement("time");
-        timeEl.className = "event-time";
-        timeEl.dateTime = event.start.toISOString();
-        timeEl.textContent = formatEventTime(event, dayStart);
-        eventEl.appendChild(timeEl);
+      const titleEl = document.createElement("h3");
+      titleEl.className = "event-title";
+      titleEl.textContent = event.title;
+      eventEl.appendChild(titleEl);
 
-        const titleEl = document.createElement("h3");
-        titleEl.className = "event-title";
-        titleEl.textContent = event.title;
-        eventEl.appendChild(titleEl);
+      if (event.location) {
+        const locationEl = document.createElement("p");
+        locationEl.className = "event-location";
+        locationEl.textContent = event.location;
+        eventEl.appendChild(locationEl);
+      }
 
-        if (event.location) {
-          const locationEl = document.createElement("p");
-          locationEl.className = "event-location";
-          locationEl.textContent = event.location;
-          eventEl.appendChild(locationEl);
-        }
+      if (event.description) {
+        const descriptionEl = document.createElement("p");
+        descriptionEl.className = "event-description";
+        descriptionEl.textContent = event.description;
+        eventEl.appendChild(descriptionEl);
+      }
 
-        if (event.description) {
-          const descriptionEl = document.createElement("p");
-          descriptionEl.className = "event-description";
-          descriptionEl.textContent = event.description;
-          eventEl.appendChild(descriptionEl);
-        }
-
-        list.appendChild(eventEl);
-      });
-    }
+      list.appendChild(eventEl);
+    });
 
     daySection.append(header, list);
     eventsContainer.appendChild(daySection);
+    renderedDayCount += 1;
+  }
+
+  if (renderedDayCount === 0) {
+    eventsContainer.classList.add("is-empty");
+
+    const emptyMessage = document.createElement("p");
+    emptyMessage.className = "no-events";
+    emptyMessage.textContent = "No events scheduled this week.";
+    eventsContainer.appendChild(emptyMessage);
+  } else {
+    eventsContainer.classList.remove("is-empty");
   }
 }
 
