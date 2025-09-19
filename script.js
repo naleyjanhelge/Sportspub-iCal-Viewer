@@ -116,15 +116,20 @@ async function renderEventsForView(pub) {
     return;
   }
 
-  if (!pub.ical) {
+  const calendarUrl = pub.ical || pub.sourceIcal;
+  if (!calendarUrl) {
     eventsContainer.innerHTML =
       "<p class=\"error-message\">No calendar has been configured for this pub.</p>";
     return;
   }
 
+  const requestUrl = /^https?:/i.test(calendarUrl)
+    ? calendarUrl
+    : new URL(calendarUrl, window.location.href).toString();
+
   let icsText = "";
   try {
-    const response = await fetch(pub.ical);
+    const response = await fetch(requestUrl);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch calendar: ${response.status} ${response.statusText}`);
