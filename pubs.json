@@ -8,6 +8,7 @@
       "secondary": "#000000",
       "text": "#ffffff"
     },
-    "ical": "https://calendar.google.com/calendar/ical/c_6034bd52283542673f88dc27f5716c80a06b967b4c5024950337efce15ba0d78%40group.calendar.google.com/public/basic.ics"
+    "ical": "feeds/sportsbaren.ics",
+    "sourceIcal": "https://calendar.google.com/calendar/ical/c_6034bd52283542673f88dc27f5716c80a06b967b4c5024950337efce15ba0d78%40group.calendar.google.com/public/basic.ics"
   }
 }
