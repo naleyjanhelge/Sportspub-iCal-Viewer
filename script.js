@@ -1,4 +1,9 @@
 const THEME_LINK_ID = "pub-theme";
+const NORWEGIAN_LOCALE = "nb-NO";
+const TIME_FORMAT_OPTIONS = { hour: "2-digit", minute: "2-digit", hour12: false };
+const WEEKDAY_FORMAT_OPTIONS = { weekday: "long" };
+const MONTH_DAY_FORMAT_OPTIONS = { month: "short", day: "numeric" };
+const DAY_FORMAT_OPTIONS = { day: "numeric" };
 
 function ensureThemeStylesheet(themePath) {
   const existingLink = document.getElementById(THEME_LINK_ID);
@@ -57,7 +62,7 @@ function applyBranding(pubKey, pub) {
   const logoEl = document.getElementById("logo");
   if (logoEl && pub.logo) {
     logoEl.src = pub.logo;
-    logoEl.alt = `${pub.name || "Pub"} logo`;
+    logoEl.alt = `${pub.name || "Puben"}-logo`;
   }
 
   const nameEl = document.getElementById("pub-name");
@@ -80,12 +85,12 @@ async function loadPubConfig() {
 
     pubs = await res.json();
   } catch (error) {
-    console.error("Error loading pub configuration", error);
+    console.error("Feil under lasting av puboppsett", error);
 
     const eventsContainer = document.getElementById("events");
     if (eventsContainer) {
       eventsContainer.innerHTML =
-        "<p class=\"error-message\">Unable to load pub configuration. Please try again later.</p>";
+        "<p class=\"error-message\">Kunne ikke laste inn puboppsettet. Prøv igjen senere.</p>";
     }
 
     return;
@@ -93,11 +98,11 @@ async function loadPubConfig() {
 
   const pub = pubs[pubKey];
   if (!pub) {
-    console.warn(`Pub configuration not found for key: ${pubKey}`);
+    console.warn(`Fant ikke puboppsett for nøkkel: ${pubKey}`);
 
     const eventsContainer = document.getElementById("events");
     if (eventsContainer) {
-      eventsContainer.innerHTML = "<p class=\"error-message\">Pub configuration not found.</p>";
+      eventsContainer.innerHTML = "<p class=\"error-message\">Fant ikke puboppsett.</p>";
     }
 
     return;
@@ -119,7 +124,7 @@ async function renderEventsForView(pub) {
   const calendarUrl = pub.ical || pub.sourceIcal;
   if (!calendarUrl) {
     eventsContainer.innerHTML =
-      "<p class=\"error-message\">No calendar has been configured for this pub.</p>";
+      "<p class=\"error-message\">Det er ikke konfigurert noen kalender for denne puben.</p>";
     return;
   }
 
@@ -137,9 +142,9 @@ async function renderEventsForView(pub) {
 
     icsText = await response.text();
   } catch (error) {
-    console.error("Error fetching calendar feed", error);
+    console.error("Feil ved henting av kalenderfeed", error);
     eventsContainer.innerHTML =
-      "<p class=\"error-message\">Unable to load events right now. Please try again later.</p>";
+      "<p class=\"error-message\">Kunne ikke laste inn arrangementer akkurat nå. Prøv igjen senere.</p>";
     return;
   }
 
@@ -253,7 +258,7 @@ function parseICalEvents(icsText) {
         }
 
         events.push({
-          title: currentEvent.summary || "Untitled Event",
+          title: currentEvent.summary || "Arrangement uten tittel",
           description: currentEvent.description || "",
           location: currentEvent.location || "",
           start: startData.date,
@@ -339,23 +344,20 @@ function formatWeekRange(start, end) {
   const sameYear = start.getFullYear() === inclusiveEnd.getFullYear();
   const sameMonth = sameYear && start.getMonth() === inclusiveEnd.getMonth();
 
-  const startOptions = { month: "short", day: "numeric" };
-  const endOptions = { month: "short", day: "numeric" };
-
   if (sameYear && sameMonth) {
-    const startText = start.toLocaleDateString(undefined, startOptions);
-    const endText = inclusiveEnd.toLocaleDateString(undefined, { day: "numeric" });
+    const startText = start.toLocaleDateString(NORWEGIAN_LOCALE, MONTH_DAY_FORMAT_OPTIONS);
+    const endText = inclusiveEnd.toLocaleDateString(NORWEGIAN_LOCALE, DAY_FORMAT_OPTIONS);
     return `${startText} – ${endText}, ${start.getFullYear()}`;
   }
 
   if (sameYear) {
-    const startText = start.toLocaleDateString(undefined, startOptions);
-    const endText = inclusiveEnd.toLocaleDateString(undefined, endOptions);
+    const startText = start.toLocaleDateString(NORWEGIAN_LOCALE, MONTH_DAY_FORMAT_OPTIONS);
+    const endText = inclusiveEnd.toLocaleDateString(NORWEGIAN_LOCALE, MONTH_DAY_FORMAT_OPTIONS);
     return `${startText} – ${endText}, ${start.getFullYear()}`;
   }
 
-  const startText = start.toLocaleDateString(undefined, startOptions);
-  const endText = inclusiveEnd.toLocaleDateString(undefined, endOptions);
+  const startText = start.toLocaleDateString(NORWEGIAN_LOCALE, MONTH_DAY_FORMAT_OPTIONS);
+  const endText = inclusiveEnd.toLocaleDateString(NORWEGIAN_LOCALE, MONTH_DAY_FORMAT_OPTIONS);
   return `${startText} ${start.getFullYear()} – ${endText} ${inclusiveEnd.getFullYear()}`;
 }
 
@@ -369,13 +371,12 @@ function isSameDay(a, b) {
 
 function formatEventTime(event, referenceDayStart) {
   if (event.allDay) {
-    return "All day";
+    return "Hele dagen";
   }
 
-  const startOptions = { hour: "2-digit", minute: "2-digit" };
   const eventStart = event.start;
   const eventEnd = event.end;
-  const startText = eventStart.toLocaleTimeString([], startOptions);
+  const startText = eventStart.toLocaleTimeString(NORWEGIAN_LOCALE, TIME_FORMAT_OPTIONS);
 
   if (referenceDayStart) {
     const dayStart = new Date(referenceDayStart);
@@ -385,10 +386,11 @@ function formatEventTime(event, referenceDayStart) {
 
     if (eventStart < dayStart) {
       if (eventEnd && eventEnd > dayStart && eventEnd < dayEnd) {
-        return `Until ${eventEnd.toLocaleTimeString([], startOptions)}`;
+        const endTime = eventEnd.toLocaleTimeString(NORWEGIAN_LOCALE, TIME_FORMAT_OPTIONS);
+        return `Til kl. ${endTime}`;
       }
 
-      return "Ongoing";
+      return "Pågår";
     }
 
     if (eventEnd && eventEnd > dayEnd) {
@@ -397,7 +399,7 @@ function formatEventTime(event, referenceDayStart) {
   }
 
   if (eventEnd && eventEnd > eventStart) {
-    const endText = eventEnd.toLocaleTimeString([], startOptions);
+    const endText = eventEnd.toLocaleTimeString(NORWEGIAN_LOCALE, TIME_FORMAT_OPTIONS);
     return `${startText} – ${endText}`;
   }
 
@@ -457,11 +459,11 @@ function renderWeeklyEvents(events) {
 
     const nameEl = document.createElement("h2");
     nameEl.className = "weekday-name";
-    nameEl.textContent = dayStart.toLocaleDateString(undefined, { weekday: "long" });
+    nameEl.textContent = dayStart.toLocaleDateString(NORWEGIAN_LOCALE, WEEKDAY_FORMAT_OPTIONS);
 
     const dateEl = document.createElement("span");
     dateEl.className = "weekday-date";
-    dateEl.textContent = dayStart.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    dateEl.textContent = dayStart.toLocaleDateString(NORWEGIAN_LOCALE, MONTH_DAY_FORMAT_OPTIONS);
 
     header.append(nameEl, dateEl);
 
@@ -510,7 +512,7 @@ function renderWeeklyEvents(events) {
 
     const emptyMessage = document.createElement("p");
     emptyMessage.className = "no-events";
-    emptyMessage.textContent = "No events scheduled this week.";
+    emptyMessage.textContent = "Ingen planlagte arrangementer denne uken.";
     eventsContainer.appendChild(emptyMessage);
   } else {
     eventsContainer.classList.remove("is-empty");
@@ -532,7 +534,7 @@ function renderSidebarEvents(events) {
   });
 
   if (upcomingEvents.length === 0) {
-    eventsContainer.innerHTML = "<p class=\"no-events\">No upcoming events.</p>";
+    eventsContainer.innerHTML = "<p class=\"no-events\">Ingen kommende arrangementer.</p>";
     return;
   }
 
@@ -600,14 +602,14 @@ function renderSidebarEvents(events) {
     const isToday = isSameDay(dayStart, todayStart);
     const isTomorrow = isSameDay(dayStart, tomorrowStart);
     titleEl.textContent = isToday
-      ? "Today"
+      ? "I dag"
       : isTomorrow
-        ? "Tomorrow"
-        : dayStart.toLocaleDateString(undefined, { weekday: "long" });
+        ? "I morgen"
+        : dayStart.toLocaleDateString(NORWEGIAN_LOCALE, WEEKDAY_FORMAT_OPTIONS);
 
     const dateEl = document.createElement("span");
     dateEl.className = "sidebar-day-date";
-    dateEl.textContent = dayStart.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    dateEl.textContent = dayStart.toLocaleDateString(NORWEGIAN_LOCALE, MONTH_DAY_FORMAT_OPTIONS);
 
     heading.append(titleEl, dateEl);
     daySection.appendChild(heading);
@@ -615,7 +617,7 @@ function renderSidebarEvents(events) {
     if (dayEvents.length === 0) {
       const emptyMessage = document.createElement("p");
       emptyMessage.className = "sidebar-no-events";
-      emptyMessage.textContent = "No events scheduled.";
+      emptyMessage.textContent = "Ingen planlagte arrangementer.";
       daySection.appendChild(emptyMessage);
     } else {
       const list = document.createElement("ul");
